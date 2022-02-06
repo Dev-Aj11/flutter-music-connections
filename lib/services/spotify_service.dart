@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:music_connections/services/network_helper.dart';
-import '../models/song.dart';
 import '../models/song_list.dart';
 
 const String client_id = '8500b7a8752047c7b3937e6271828d84';
@@ -22,33 +21,38 @@ class SpotifyService {
     authToken = jsonResponse["access_token"] ?? "";
   }
 
-  getSongs(String userQuery) async {
+  getSongs(String userQuery, SongList songList) async {
     if (authToken.isEmpty) {
       await _getAuthorizationToken();
     }
 
+    // TODO: need to handle error when song doesn't exist!
     String spotifyURL =
-        'https://api.spotify.com/v1/search?type=track&limit=10&q=positions';
+        'https://api.spotify.com/v1/search?type=track&limit=10&q=$userQuery';
     var requestHeaders = {'Authorization': 'Bearer $authToken'};
     var jsonResponse = await NetworkHelper(spotifyURL).getReq(requestHeaders);
-    SongList songList = SongList();
-    var jsonTracks = jsonResponse["tracks"]["items"];
-    for (var jsonTrack in jsonTracks) {
-      var songName = jsonTrack["name"];
-      var popularity = jsonTrack["popularity"];
-      var artist = jsonTrack["artists"][0]["name"];
-      // var album = jsonTrack["album"][0]["name"];
-      // var artwork = jsonTrack["album"][0]["images"][""];
 
-      songList.addSong(
-        songName: songName,
-        artist: artist,
-        albumCover: "yolo",
-        popularity: popularity,
-      );
-      print(jsonTrack["name"]);
-      print(jsonTrack["track_number"]);
+    // TODO: need to check whether json response is not null for each of these
+    // read more about parsing json safely here: https://docs.flutter.dev/cookbook/networking/background-parsing
+    // try {} catch {} blocks
+    try {
+      songList.clear();
+      var jsonTracks = jsonResponse["tracks"]["items"];
+      for (var jsonTrack in jsonTracks) {
+        var songName = jsonTrack["name"];
+        var popularity = jsonTrack["popularity"];
+        var artist = jsonTrack["artists"][0]["name"];
+        var artworkURL = jsonTrack["album"]["images"][2]["url"];
+
+        songList.addSong(
+          songName: songName,
+          artist: artist,
+          albumCover: artworkURL,
+          popularity: popularity,
+        );
+      }
+    } catch (e) {
+      print(e.toString());
     }
-    print(songList.toString());
   }
 }
