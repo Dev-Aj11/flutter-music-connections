@@ -68,8 +68,9 @@ class _RequestSongScreenState extends State<RequestSongScreen> {
                   // add to firebase
                   // show task bar / snack that song is added to requested songs menu
                   // Navigator.pop(context)
+                  print('user touched');
                 },
-                child: SongTile(songList.getSongs()),
+                child: SongTiles(songList.getSongsSortedByPopularity()),
               ),
             ),
           ],

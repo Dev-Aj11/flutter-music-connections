@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/song.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 
 /*
 Future TODO: Upgrade styling for songs with a custom Card that includes: 
@@ -9,20 +8,16 @@ a) taller cards
 b) larger artwork
 c) moving the votecount metadata below the upvote arrow
 */
-class SongTile extends StatelessWidget {
+class SongTiles extends StatelessWidget {
   final List<Song> songs;
   final Function? updateVoteCount;
   final CollectionReference fbSongs =
       FirebaseFirestore.instance.collection('songs');
 
+  // If a future doesn't produce a usable value, future's type is Future<void>
+  // Future indicates that this function is conducting an async operation
   Future<void> addSong(
       String songName, String artist, String albumUrl, int popularity) {
-    // var id = uuid.v5(options: {
-    //   'songName': songName,
-    //   'artist': artist,
-    //   'albumUrl': albumUrl,
-    //   'popularity': popularity,
-    // });
     // Create UID based on user inputs to check for duplication
     int uid = "$songName$artist$albumUrl$popularity".hashCode;
 
@@ -45,7 +40,7 @@ class SongTile extends StatelessWidget {
   }
 
   // sets itself to null if updateVoteCount is not passed
-  SongTile(this.songs, [this.updateVoteCount]);
+  SongTiles(this.songs, [this.updateVoteCount]);
 
   @override
   Widget build(BuildContext context) {

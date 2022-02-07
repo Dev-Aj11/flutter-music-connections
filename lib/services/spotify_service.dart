@@ -44,7 +44,7 @@ class SpotifyService {
         var artist = jsonTrack["artists"][0]["name"];
         var artworkURL = jsonTrack["album"]["images"][2]["url"];
 
-        songList.addSong(
+        songList.addNewSong(
           songName: songName,
           artist: artist,
           albumCover: artworkURL,
