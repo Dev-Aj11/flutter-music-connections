@@ -14,7 +14,7 @@ class Song {
       required this.voteCount});
 
   String toString() {
-    return "$popularity: $artist, $songName, $albumCover, $voteCount";
+    return "$songName$artist$albumCover$popularity";
   }
 
   void incrementVoteCount() {
@@ -25,6 +25,10 @@ class Song {
   void decrementVoteCount() {
     _userVoted = false;
     this.voteCount--;
+  }
+
+  void toggleUserVoted() {
+    _userVoted = !_userVoted;
   }
 
   bool didUserVote() {

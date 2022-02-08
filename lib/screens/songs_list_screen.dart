@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/song_list.dart';
+import 'package:music_connections/models/requested_song_list.dart';
 import '../models/song.dart';
-import '../components/song_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Future TODO:
@@ -42,7 +41,7 @@ class SongsListScreen extends StatelessWidget {
             ),
             Expanded(
               // load from Firebase
-              child: RequestedSongsList(),
+              child: RequestedSongListScreen(),
             )
           ],
         ),
@@ -51,69 +50,59 @@ class SongsListScreen extends StatelessWidget {
   }
 }
 
-class RequestedSongsList extends StatefulWidget {
-  const RequestedSongsList({Key? key}) : super(key: key);
+class RequestedSongListScreen extends StatefulWidget {
+  const RequestedSongListScreen({Key? key}) : super(key: key);
 
   @override
-  _RequestedSongsListState createState() => _RequestedSongsListState();
+  _RequestedSongListScreenState createState() =>
+      _RequestedSongListScreenState();
 }
 
-class _RequestedSongsListState extends State<RequestedSongsList> {
-  final Stream<QuerySnapshot> _songsStream =
-      FirebaseFirestore.instance.collection('songs').snapshots();
-  SongList songList = SongList();
+class _RequestedSongListScreenState extends State<RequestedSongListScreen> {
+  RequestedSongList reqSongList = RequestedSongList();
+  bool reqSongListReady = false;
 
   @override
   void initState() {
     super.initState();
-    // songList = SongList();
+    _createSongList();
   }
 
-  void incrementVoteCount(Song song) {
-    songList.incrementVote(song);
-    print(song.toString());
+  _createSongList() async {
+    // init adds songs from firebase to local copy
+    await reqSongList.getSongsFromFb();
+    reqSongListReady = true;
     setState(() {});
   }
 
-  void decreaseVoteCount(Song song) {
-    // decrease vote when user disables
-    songList.decrementVote(song);
-    setState(() {});
+  void updateVote(Song song, bool userVoted) async {
+    // show progress indicator?
+    await reqSongList.updateVoteCount(song, userVoted);
+    // don't need to call setState here since
+    // StreamBuilder<> will automatically do so when value is updated
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!reqSongListReady) {
+      return Container(child: CircularProgressIndicator());
+    }
+
+    // i don't like this solution as it makes the view directly talk
+    // to the model (FB); is there a better way to do this?
     return StreamBuilder<QuerySnapshot>(
-        stream: _songsStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong');
-          }
+        stream: reqSongList.getStream(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return LinearProgressIndicator();
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
-          }
+          reqSongList.updateSongList(snapshot);
 
-          // A postfix exclamation mark (!) takes the expression on the left and casts it to its underlying non-nullable type
-          // In this case, snapshot.data! is casted to _jsonQuerySnapshot
-          var docSnapshots = snapshot.data!.docs;
-
-          songList.clear();
-          // Firebase structure collection -> Documents Snapshot --> Could contain nested collections
-          for (DocumentSnapshot document in docSnapshots) {
-            Map<String, dynamic> data =
-                document.data()! as Map<String, dynamic>;
-            Song song = songList.getSongFromJson(data);
-            songList.addSong(song);
-          }
-
-          List<Song> songs = songList.getSongsSortedByVoteCount();
-          print(songs.length);
-          // print(songs.toList().toString());
+          List<Song> songList = reqSongList.getSongs();
           return ListView.builder(
-              itemCount: songs.length,
+              itemCount: songList.length,
               itemBuilder: (context, index) {
-                Song song = songs[index];
+                Song song = songList[index];
+
                 return Card(
                   elevation: 4,
                   child: ListTile(
@@ -121,22 +110,13 @@ class _RequestedSongsListState extends State<RequestedSongsList> {
                     title: Text(song.songName),
                     subtitle: Text(song.artist),
                     trailing: TextButton.icon(
-                      style: (song.didUserVote() == true)
-                          ? TextButton.styleFrom(
-                              backgroundColor: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.12))
-                          : null,
                       onPressed: () {
-                        // when setState is triggered in this function
-                        // is it rebuilding all the widgets or only one widget?
-                        song.didUserVote()
-                            ? decreaseVoteCount(song)
-                            : incrementVoteCount(song);
+                        updateVote(song, song.didUserVote());
                       },
                       icon: Icon(Icons.arrow_upward),
-                      label: Text(song.voteCount.toString()),
+                      label: Text(
+                        song.voteCount.toString(),
+                      ),
                     ),
                   ),
                 );
