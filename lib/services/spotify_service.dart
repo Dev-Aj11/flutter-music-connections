@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:music_connections/services/network_helper.dart';
-import '../models/song_list.dart';
+import '../models/song.dart';
 
 const String client_id = '8500b7a8752047c7b3937e6271828d84';
 const String client_secret = 'a86d849e83a142aeb92391153fe36980';
@@ -21,7 +21,7 @@ class SpotifyService {
     authToken = jsonResponse["access_token"] ?? "";
   }
 
-  getSongs(String userQuery, SongList songList) async {
+  getSongs(String userQuery, List<Song> songList) async {
     if (authToken.isEmpty) {
       await _getAuthorizationToken();
     }
@@ -44,12 +44,13 @@ class SpotifyService {
         var artist = jsonTrack["artists"][0]["name"];
         var artworkURL = jsonTrack["album"]["images"][2]["url"];
 
-        songList.addNewSong(
+        songList.add(Song(
           songName: songName,
           artist: artist,
           albumCover: artworkURL,
           popularity: popularity,
-        );
+          voteCount: 0,
+        ));
       }
     } catch (e) {
       print(e.toString());

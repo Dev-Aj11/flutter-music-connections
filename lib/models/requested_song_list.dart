@@ -39,25 +39,26 @@ class RequestedSongList {
 
   // increase vote count of song
   updateVoteCount(Song song, bool userVoted) async {
+    print(userVoted);
     // is this even required?
-    int songIndex = _songs.indexOf(song);
+    int songIndex = _indexOf(song);
 
     // update firebase
     int uid = song.toString().hashCode;
 
-    // increment voteCount by 1
-    int currVoteCount = _songs[songIndex].voteCount;
-    int newVoteCount = (userVoted) ? currVoteCount-- : currVoteCount++;
+    int newVoteCount = 0;
+    if (songIndex != -1) {
+      Song song = _songs[songIndex];
+      newVoteCount = (userVoted) ? --song.voteCount : ++song.voteCount;
+    }
+
+    song.toggleUserVoted();
     await fbSongList
         .doc(uid.toString())
         .update({'voteCount': newVoteCount})
         .then((value) => print("user updated vote count"))
         .catchError((onError) => print("Failed to update: $onError"));
   }
-
-  // decrease vote count of song
-
-  // return wether user has already voted for song
 
   Stream<QuerySnapshot> getStream() {
     return fbSongList.snapshots();
@@ -71,15 +72,33 @@ class RequestedSongList {
     // 2 ways to update local copy
     // 1) clear & refill (expensive)
     // 2) either vote count has changed or new song added (check for change & update)
-    _songs.clear();
+    // _songs.clear();
 
     // Firebase structure collection -> Documents Snapshot --> Could contain nested collections
     for (DocumentSnapshot document in docSnapshots) {
       Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
       Song song = _getSongFromJson(data);
-      _songs.add(song);
+      // if song already exists, then don't add; update vote count
+
+      int songIndex = _indexOf(song);
+      if (songIndex != -1) {
+        // update vote count
+        _songs[songIndex].voteCount = song.voteCount;
+      } else {
+        // if song doesn't exist, then add to the list
+        _songs.add(song);
+      }
     }
     _sortByVoteCount();
+  }
+
+  int _indexOf(Song s) {
+    for (var i = 0; i < _songs.length; i++) {
+      if (_songs[i].toString() == s.toString()) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   // returns a list of songs sorted by Vote Count (high to low)

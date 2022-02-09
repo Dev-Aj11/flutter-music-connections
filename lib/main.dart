@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:music_connections/screens/request_song_screen.dart';
+import 'package:music_connections/screens/song_search_screen.dart';
 import 'package:music_connections/screens/songs_list_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => SongsListScreen(),
-        '/request': (context) => RequestSongScreen()
+        '/request': (context) => SongSearchScreen()
       },
     );
   }

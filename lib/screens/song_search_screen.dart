@@ -1,22 +1,39 @@
 import 'package:flutter/material.dart';
-import '../components/song_tile.dart';
-import '../models/song_list.dart';
-import '../services/spotify_service.dart';
+import 'package:music_connections/components/song_tile.dart';
+import 'package:music_connections/models/song_search_list.dart';
+import '../models/song.dart';
 
-class RequestSongScreen extends StatefulWidget {
-  const RequestSongScreen({Key? key}) : super(key: key);
+class SongSearchScreen extends StatefulWidget {
+  const SongSearchScreen({Key? key}) : super(key: key);
 
   @override
-  _RequestSongScreenState createState() => _RequestSongScreenState();
+  _SongSearchScreenState createState() => _SongSearchScreenState();
 }
 
-class _RequestSongScreenState extends State<RequestSongScreen> {
-  SongList songList = SongList();
+class _SongSearchScreenState extends State<SongSearchScreen> {
+  SongSearchList songs = SongSearchList();
   String userQuery = "";
+  bool showSnackBar = false;
+  String snackBarMsg = "";
 
-  void getSongList() async {
-    await SpotifyService().getSongs(userQuery, songList);
+  void getSongs() async {
+    await songs.getSongList(userQuery);
     setState(() {});
+  }
+
+  void addSong(Song s) async {
+    bool songExists = await songs.addSongToFb(
+        s.songName, s.artist, s.albumCover, s.popularity);
+    print(songExists);
+    if (songExists) {
+      // already exists
+      snackBarMsg = "Song already added!";
+    } else {
+      // added to song list
+      snackBarMsg = "Added song to requested songs list";
+    }
+    final snackBar = SnackBar(content: Text(snackBarMsg));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -45,7 +62,7 @@ class _RequestSongScreenState extends State<RequestSongScreen> {
               ),
               onChanged: (value) {
                 userQuery = value;
-                getSongList();
+                getSongs();
               },
             ),
             SizedBox(
@@ -68,9 +85,10 @@ class _RequestSongScreenState extends State<RequestSongScreen> {
                   // add to firebase
                   // show task bar / snack that song is added to requested songs menu
                   // Navigator.pop(context)
+                  // check if song is already in the db
                   print('user touched');
                 },
-                child: SongTiles(songList.getSongsSortedByPopularity()),
+                child: SongTile(songs.getSongsSortedByPopularity(), addSong),
               ),
             ),
           ],
@@ -79,3 +97,13 @@ class _RequestSongScreenState extends State<RequestSongScreen> {
     );
   }
 }
+
+// class CustomSnackBar extends StatelessWidget {
+//   final String snackBarMsg; 
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final snackBar = SnackBar(content: Text(snackBarMsg));
+//     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+//   }
+// }

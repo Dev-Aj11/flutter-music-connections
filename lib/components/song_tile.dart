@@ -1,80 +1,56 @@
 import 'package:flutter/material.dart';
 import '../models/song.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-/*
-Future TODO: Upgrade styling for songs with a custom Card that includes: 
-a) taller cards
-b) larger artwork
-c) moving the votecount metadata below the upvote arrow
-*/
-class SongTiles extends StatelessWidget {
-  final List<Song> songs;
-  final Function? updateVoteCount;
-  final CollectionReference fbSongs =
-      FirebaseFirestore.instance.collection('songs');
+class SongTile extends StatelessWidget {
+  final List<Song> songList;
+  final Function? addSong;
+  final Function? updateVote;
 
-  // If a future doesn't produce a usable value, future's type is Future<void>
-  // Future indicates that this function is conducting an async operation
-  Future<void> addSong(
-      String songName, String artist, String albumUrl, int popularity) {
-    // Create UID based on user inputs to check for duplication
-    int uid = "$songName$artist$albumUrl$popularity".hashCode;
-
-    // check if song already exists in the requestes songs db
-    return fbSongs.doc(uid.toString()).get().then((docSnapshot) {
-      if (!docSnapshot.exists) {
-        fbSongs
-            .doc(uid.toString())
-            .set({
-              'songName': songName,
-              'artist': artist,
-              'albumUrl': albumUrl,
-              'popularity': popularity,
-              'voteCount': 0,
-            })
-            .then((value) => print("song added"))
-            .catchError((error) => print("Failed due to $error"));
-      }
-    });
-  }
-
-  // sets itself to null if updateVoteCount is not passed
-  SongTiles(this.songs, [this.updateVoteCount]);
+  SongTile(this.songList, [this.addSong, this.updateVote]);
 
   @override
   Widget build(BuildContext context) {
+    bool voteExist = (this.updateVote != null) ? true : false;
     return ListView.builder(
-      itemBuilder: (context, index) {
-        Song song = songs[index];
-        return InkWell(
-          onTap: () {
-            addSong(
-              song.songName,
-              song.artist,
-              song.albumCover,
-              song.popularity,
-            );
-          },
-          child: Card(
+        itemCount: songList.length,
+        itemBuilder: (context, index) {
+          Song song = songList[index];
+          return Card(
             elevation: 4,
             child: ListTile(
               leading: Image.network(song.albumCover),
               title: Text(song.songName),
               subtitle: Text(song.artist),
-              trailing: (updateVoteCount != null)
-                  ? TextButton.icon(
-                      onPressed: () {
-                        this.updateVoteCount!(song);
-                      },
-                      icon: Icon(Icons.arrow_upward),
-                      label: Text(song.voteCount.toString()))
-                  : SizedBox.shrink(),
+              onTap: (!voteExist) ? () => this.addSong!(song) : null,
+              trailing:
+                  (voteExist) ? VoteTextButton(song, this.updateVote!) : null,
             ),
-          ),
-        );
+          );
+        });
+  }
+}
+
+class VoteTextButton extends StatelessWidget {
+  final Song song;
+  final Function updateVote;
+
+  VoteTextButton(this.song, this.updateVote);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      style: song.didUserVote()
+          ? TextButton.styleFrom(
+              backgroundColor:
+                  Theme.of(context).colorScheme.primary.withOpacity(0.2))
+          : null,
+      onPressed: () {
+        updateVote(song, song.didUserVote());
       },
-      itemCount: this.songs.length,
+      icon: Icon(Icons.arrow_upward),
+      label: Text(
+        song.voteCount.toString(),
+      ),
     );
   }
 }
