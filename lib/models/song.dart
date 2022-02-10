@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Song {
-  String artist;
-  String songName;
-  String albumCover;
-  int popularity;
-  int voteCount;
+  late String artist;
+  late String songName;
+  late String albumCover;
+  late int popularity;
+  late int voteCount;
   bool _userVoted = false;
 
   Song(
@@ -12,6 +14,20 @@ class Song {
       required this.albumCover,
       required this.popularity,
       required this.voteCount});
+
+  // Will accept QueryDocumentSnapshot or DocumentSnapshot
+  Song.fromFirebase(DocumentSnapshot doc) {
+    this.albumCover = doc["albumUrl"];
+    this.artist = doc["artist"];
+    this.songName = doc["songName"];
+    this.popularity = doc["popularity"];
+    this.voteCount = doc["voteCount"];
+  }
+
+  Song getSongFromFirebase(DocumentSnapshot doc) {
+    // Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+    return Song.fromFirebase(doc);
+  }
 
   String toString() {
     return "$songName$artist$albumCover$popularity";
@@ -34,5 +50,10 @@ class Song {
   bool didUserVote() {
     // does this send a copy of the vote or the pointer to the original value?
     return _userVoted;
+  }
+
+  int getUID() {
+    return "${this.songName}${this.artist}${this.albumCover}${this.popularity}"
+        .hashCode;
   }
 }

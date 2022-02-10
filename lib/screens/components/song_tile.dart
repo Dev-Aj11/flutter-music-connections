@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/song.dart';
+import '../../models/song.dart';
 
 class SongTile extends StatelessWidget {
   final List<Song> songList;

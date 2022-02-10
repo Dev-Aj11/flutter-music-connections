@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:music_connections/components/requested_songs_tiles_list.dart';
-import 'package:music_connections/models/requested_song_list.dart';
+
+import 'package:music_connections/constants.dart';
+import 'package:music_connections/controllers/requested_song_list_controller.dart';
+
+import 'components/requested_songs_tiles_list.dart';
 
 // Future TODO:
 // Add artist information in top row
 // Add quick way of giving feedback
 class SongsListScreen extends StatelessWidget {
+  final ReqSongListController reqSongController;
+
+  SongsListScreen(this.reqSongController);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Music Connections"),
+        title: const Text(
+          "Music Connections",
+          style: kSectionHeadingStyle,
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -33,14 +43,14 @@ class SongsListScreen extends StatelessWidget {
             ),
             Text(
               "Requested Songs",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: kSectionHeadingStyle,
             ),
             SizedBox(
               height: 10,
             ),
             Expanded(
               // load from Firebase
-              child: RequestedSongsTileList(),
+              child: RequestedSongsTileList(this.reqSongController),
             )
           ],
         ),
