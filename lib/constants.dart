@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const kSectionHeadingStyle =
-    TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
+    TextStyle(fontSize: 22, fontWeight: FontWeight.w700);
 const kAppBarHeadingStyle = TextStyle(color: Colors.white);
 const kSearchFieldDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),

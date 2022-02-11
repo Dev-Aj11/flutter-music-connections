@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:music_connections/constants.dart';
 import 'package:music_connections/controllers/requested_song_list_controller.dart';
-
+import './components/app_icons.dart';
 import 'components/requested_songs_tiles_list.dart';
 
 // Future TODO:
@@ -19,7 +19,7 @@ class SongsListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "Music Connections",
-          style: kSectionHeadingStyle,
+          style: kAppBarHeadingStyle,
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -61,8 +61,6 @@ class SongsListScreen extends StatelessWidget {
 }
 
 class BandInfo extends StatelessWidget {
-  const BandInfo({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -87,11 +85,85 @@ class BandInfo extends StatelessWidget {
                     width: 20,
                   ),
                   // need to move this up
-                  Text("The Rock & Rolls"),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("The Rock & Rolls"),
+                      SizedBox(
+                        height: 2,
+                      ),
+                      Text(
+                        "SF's hottest band",
+                        style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                      ),
+                    ],
+                  )
                 ],
               ),
               children: [
-                Text("yolo"),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        height: 1,
+                        color: Colors.grey[400],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Find us on",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 0,
+                        children: [
+                          InputChip(
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.grey.shade100,
+                              child: Icon(Icons.facebook),
+                            ),
+                            label: Text("facebook"),
+                            onPressed: () {},
+                            backgroundColor: Colors.grey.shade100,
+                          ),
+                          InputChip(
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.grey.shade100,
+                              child: Icon(AppIcons.facebook_squared),
+                            ),
+                            label: Text("IG"),
+                          ),
+                          InputChip(
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.grey.shade100,
+                              child: Icon(Icons.facebook),
+                            ),
+                            label: Text("Spotify"),
+                          ),
+                        ],
+                      ),
+                      Wrap(
+                        children: [
+                          Text(
+                            "Love what we play? We accept tips on:",
+                          ),
+                          InputChip(
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.grey.shade100,
+                              child: Icon(Icons.facebook),
+                            ),
+                            label: Text("Venmo"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -110,67 +182,115 @@ class BandFeedback extends StatefulWidget {
 }
 
 class _BandFeedbackState extends State<BandFeedback> {
-  int like = 0;
-  int dislike = 0;
-  var userVoted = [false, false];
+  var userReactions = {
+    Reactions.like: [0, false],
+    Reactions.love: [0, false],
+    Reactions.celebrate: [0, false],
+    Reactions.dislike: [0, false],
+  };
 
-  updateLikes() {
-    setState(() {
-      if (userVoted[0]) {
-        --like;
-        userVoted[0] = false;
-      } else {
-        ++like;
-        userVoted[0] = true;
-      }
-      if (userVoted[1]) {
-        userVoted[1] = false;
-      }
-    });
-  }
+  updateReactions(Reactions reaction) {
+    var currValue = userReactions[reaction];
+    int currReactionNum = currValue![0] as int;
+    bool currReactionStatus = currValue[1] as bool;
 
-  updateDislikes() {
-    setState(() {
-      if (userVoted[1]) {
-        --dislike;
-        userVoted[1] = false;
-      } else {
-        ++dislike;
-        userVoted[1] = true;
+    int newReactionNum;
+    if (currReactionStatus) {
+      newReactionNum = --currReactionNum;
+    } else {
+      newReactionNum = ++currReactionNum;
+    }
+
+    bool newReactionStatus = !currReactionStatus;
+    userReactions.update(
+        reaction, (value) => [newReactionNum, newReactionStatus]);
+
+    for (Reactions r in userReactions.keys) {
+      if (r != reaction) {
+        if (userReactions[r]![1] as bool) {
+          userReactions.update(r, (currValue) {
+            int currReactions = currValue[0] as int;
+            return [--currReactions, false];
+          });
+        }
       }
-      if (userVoted[0]) {
-        userVoted[0] = false;
-      }
-    });
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ElevatedButton.icon(
-          onPressed: () {
-            updateLikes();
-          },
-          icon: userVoted[0]
-              ? Icon(Icons.thumb_up)
-              : Icon(Icons.thumb_up_outlined),
-          label: Text("$like"),
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        ElevatedButton.icon(
-          onPressed: () {
-            updateDislikes();
-          },
-          icon: userVoted[1]
-              ? Icon(Icons.thumb_down)
-              : Icon(Icons.thumb_down_outlined),
-          label: Text("$dislike"),
-        ),
+        ReactionButton(Reactions.like, userReactions, updateReactions),
+        ReactionButton(Reactions.love, userReactions, updateReactions),
+        ReactionButton(Reactions.celebrate, userReactions, updateReactions),
+        ReactionButton(Reactions.dislike, userReactions, updateReactions),
       ],
     );
   }
+}
+
+class ReactionButton extends StatelessWidget {
+  final Reactions reaction;
+  final Map<Reactions, List<Object>> currUserReactions;
+  final Function userReacted;
+
+  ReactionButton(this.reaction, this.currUserReactions, this.userReacted);
+
+  @override
+  Widget build(BuildContext context) {
+    var reactionIcons = getIcons();
+    return ElevatedButton.icon(
+        onPressed: () => userReacted(this.reaction),
+        icon: (currUserReactions[reaction]![1] as bool)
+            ? Icon(
+                reactionIcons[0],
+                color: Colors.blue,
+                size: 24,
+              )
+            : Icon(
+                reactionIcons[1],
+                color: Colors.blue,
+                size: 24,
+              ),
+        label: (this.reaction == Reactions.dislike)
+            ? Text("")
+            : Text(
+                "${currUserReactions[reaction]![0]}",
+                style: TextStyle(color: Colors.blue),
+              ),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          primary: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+                color: Colors.grey.shade300,
+                width: 1,
+                style: BorderStyle.solid),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ));
+  }
+
+  getIcons() {
+    switch (this.reaction) {
+      case Reactions.like:
+        return [Icons.thumb_up, Icons.thumb_up_outlined];
+      case Reactions.love:
+        return [Icons.favorite, Icons.favorite_border_outlined];
+      case Reactions.celebrate:
+        return [Icons.celebration, Icons.celebration_outlined];
+      case Reactions.dislike:
+        return [Icons.thumb_down, Icons.thumb_down_outlined];
+    }
+  }
+}
+
+enum Reactions {
+  like,
+  love,
+  celebrate,
+  dislike,
 }
