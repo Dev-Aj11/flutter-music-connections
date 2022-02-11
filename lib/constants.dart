@@ -13,3 +13,18 @@ const kSearchFieldDecoration = InputDecoration(
   hintText: "Search for songs",
   suffixIcon: Icon(Icons.search),
 );
+
+enum Reactions {
+  like,
+  love,
+  celebrate,
+  dislike,
+}
+
+enum SocialMediaEnum {
+  facebook,
+  instagram,
+  youtube,
+  spotify,
+  venmo,
+}
