@@ -25,11 +25,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // _createSongList();
+    _createSongList();
   }
 
   _createSongList() async {
-    // init adds songs from firebase to local copy
+    // init adds songs from firebase to local copy, so other apps of the
+    // app can pull it from here.
     await reqSongController.getSongsFromFb();
   }
 
