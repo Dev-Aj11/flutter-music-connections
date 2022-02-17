@@ -4,17 +4,29 @@ import '../models/song.dart';
 
 // Controller for Requested Songs List
 
-class ReqSongListController {
+class CopyReqSongController {
   List<Song> _songs = [];
-  late CollectionReference fbSongList;
+  late DocumentReference fbSongList;
 
-  ReqSongListController() {
+  CopyReqSongController(String docId) {
     // get songs from firebase
-    fbSongList = FirebaseFirestore.instance.collection('songs');
+    print("from copy req");
+    print(docId);
+    fbSongList = FirebaseFirestore.instance.collection('playlists').doc(docId);
+    getSongsFromFb();
   }
 
   Future getSongsFromFb() async {
     try {
+      await fbSongList.get().then((DocumentSnapshot doc) {
+        print(doc["songs"]);
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+}
+/*
       await fbSongList.get().then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((doc) {
           Song song = Song.fromFirebase(doc);
@@ -107,3 +119,4 @@ class ReqSongListController {
     return _songs;
   }
 }
+*/

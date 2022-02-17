@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:music_connections/controllers/app_controller.dart';
+import 'package:music_connections/controllers/copy_req_song_controller.dart';
+import 'package:music_connections/screens/playlist_owner_screen.dart';
 import 'package:music_connections/screens/song_search_screen.dart';
 import 'package:music_connections/screens/songs_list_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,7 +44,12 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: {
         '/': (context) => SongsListScreen(reqSongController),
-        '/request': (context) => SongSearchScreen(reqSongController)
+        '/request': (context) => SongSearchScreen(reqSongController),
+        '/owner': (context) {
+          // TODO: FIX
+          print('why am I here?');
+          return PlaylistOwnerScreen("herl", CopyReqSongController('yolo'));
+        }
       },
     );
   }
