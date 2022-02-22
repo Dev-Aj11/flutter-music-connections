@@ -7,14 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:music_connections/controllers/copy_req_song_controller.dart';
 import 'requested_song_list_controller.dart';
 
-class AppController {
-  Map<String, CopyReqSongController> currPlaylists = {};
-  CollectionReference fbPlaylists =
-      FirebaseFirestore.instance.collection('playlists');
+Map<String, dynamic> currPlaylists = {'TESTIN': ReqSongListController()};
+CollectionReference fbPlaylists =
+    FirebaseFirestore.instance.collection('playlists');
 
+class AppController {
   // creates a new playlist with given name
   // returns true if playlist
-  Future<CopyReqSongController?> createNewPlaylist(String name) async {
+  static Future<CopyReqSongController?> createNewPlaylist(String name) async {
     // generate random 6 digit code
     String randCode = _getRandSixDigitCode();
     try {
@@ -39,7 +39,7 @@ class AppController {
   }
 
   // generates a unique, non-repeating 6 digit char sequence
-  String _getRandSixDigitCode() {
+  static String _getRandSixDigitCode() {
     var randCode = "";
     var possible =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

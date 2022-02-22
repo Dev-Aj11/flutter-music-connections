@@ -9,6 +9,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
   final CopyReqSongController reqSongController;
 
   PlaylistOwnerScreen(this.playlist_name, this.reqSongController) {
+    print('triggered');
     reqSongController.getSongsFromFb();
   }
 
@@ -51,17 +52,16 @@ class PlaylistOwnerScreen extends StatelessWidget {
               height: 20,
             ),
             Text(
-              "Requested Songs",
+              "Requested Songs $playlist_name",
               style: kSectionHeadingStyle,
             ),
             SizedBox(
               height: 10,
             ),
             Expanded(
-              // load from Firebase
-              child:
-                  Container(), // RequestedSongsTileList(this.reqSongController),
-            )
+                // load from Firebase
+                // child: RequestedSongsTileList(this.reqSongController),
+                child: Container())
           ],
         ),
       ),

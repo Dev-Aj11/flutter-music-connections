@@ -3,40 +3,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/song.dart';
 
 // Controller for Requested Songs List
-
 class CopyReqSongController {
   List<Song> _songs = [];
   late DocumentReference fbSongList;
 
   CopyReqSongController(String docId) {
     // get songs from firebase
-    print("from copy req");
-    print(docId);
     fbSongList = FirebaseFirestore.instance.collection('playlists').doc(docId);
-    getSongsFromFb();
   }
 
   Future getSongsFromFb() async {
     try {
       await fbSongList.get().then((DocumentSnapshot doc) {
-        print('from docs');
-        print(doc["songs"]);
-        // add songs to list
+        List<dynamic> songList = doc["songs"];
+        print(songList.length);
+        for (Map<String, dynamic> songInfo in songList) {
+          Song song = Song.fromFirebase(songInfo.values.toList()[0]);
+          _songs.add(song);
+        }
       });
     } catch (e) {
       print(e.toString());
-    }
-  }
-}
-/*
-      await fbSongList.get().then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          Song song = Song.fromFirebase(doc);
-          _songs.add(song);
-        });
-      });
-    } catch (e) {
-      print(e);
     }
   }
 
@@ -54,6 +41,30 @@ class CopyReqSongController {
     return UnmodifiableListView(_sortByVoteCount());
   }
 
+  // returns a list of songs sorted by Vote Count (high to low)
+  List<Song> _sortByVoteCount() {
+    _songs.sort((song1, song2) {
+      return song2.voteCount.compareTo(song1.voteCount);
+    });
+    return _songs;
+  }
+
+  // customIndexOf function
+  int _indexOf(Song s) {
+    for (var i = 0; i < _songs.length; i++) {
+      if (_songs[i].toString() == s.toString()) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // ooff; changed return type from QuerySnapshot to DocumentSnapshot
+  // something to do with Bloc pattern?
+  Stream<DocumentSnapshot> getStream() {
+    return fbSongList.snapshots();
+  }
+/*
   // increase vote count of song
   updateVoteCount(Song song, bool userVoted) async {
     // update firebase
@@ -73,11 +84,12 @@ class CopyReqSongController {
         .update({'voteCount': newVoteCount})
         .then((value) => print("user updated vote count"))
         .catchError((onError) => print("Failed to update: $onError"));
-  }
+  }*/
+}
+/*
 
-  Stream<QuerySnapshot> getStream() {
-    return fbSongList.snapshots();
-  }
+
+
 
   // triggered when there is a change to firebase songs db
   void updateSongList(snapshot) {
@@ -103,22 +115,7 @@ class CopyReqSongController {
     _sortByVoteCount();
   }
 
-  // customIndexOf function
-  int _indexOf(Song s) {
-    for (var i = 0; i < _songs.length; i++) {
-      if (_songs[i].toString() == s.toString()) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  // returns a list of songs sorted by Vote Count (high to low)
-  List<Song> _sortByVoteCount() {
-    _songs.sort((song1, song2) {
-      return song2.voteCount.compareTo(song1.voteCount);
-    });
-    return _songs;
-  }
 }
+
+
 */

@@ -16,7 +16,7 @@ class Song {
       required this.voteCount});
 
   // Will accept QueryDocumentSnapshot or DocumentSnapshot
-  Song.fromFirebase(DocumentSnapshot doc) {
+  Song.fromFirebase(dynamic doc) {
     this.albumCover = doc["albumUrl"];
     this.artist = doc["artist"];
     this.songName = doc["songName"];

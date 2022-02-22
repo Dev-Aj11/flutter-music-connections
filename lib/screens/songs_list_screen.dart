@@ -47,12 +47,14 @@ class SongsListScreen extends StatelessWidget {
         // TODO: should check for errors
         // TODO: show spinner while playlist is being made
         var copyReqSongController =
-            await AppController().createNewPlaylist(playlist_name);
+            await AppController.createNewPlaylist(playlist_name);
 
         // TODO: update flutter navigation pattern with onGenerateRoute in main();
         // https://resocoder.com/2019/04/27/flutter-routes-navigation-parameters-named-routes-ongenerateroute/
-        Navigator.pushReplacementNamed(context, '/owner',
-            arguments: {playlist_name, copyReqSongController});
+        Navigator.pushReplacementNamed(context, '/owner', arguments: {
+          "playlistName": playlist_name,
+          "controller": copyReqSongController
+        });
         break;
       case null:
         // dialog dismissed
