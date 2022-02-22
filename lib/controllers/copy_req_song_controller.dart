@@ -19,7 +19,9 @@ class CopyReqSongController {
   Future getSongsFromFb() async {
     try {
       await fbSongList.get().then((DocumentSnapshot doc) {
+        print('from docs');
         print(doc["songs"]);
+        // add songs to list
       });
     } catch (e) {
       print(e.toString());

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/controllers/app_controller.dart';
 import 'package:music_connections/controllers/copy_req_song_controller.dart';
+import 'package:music_connections/route_generator.dart';
 import 'package:music_connections/screens/playlist_owner_screen.dart';
 import 'package:music_connections/screens/song_search_screen.dart';
 import 'package:music_connections/screens/songs_list_screen.dart';
@@ -42,15 +43,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: ThemeData(dividerColor: Colors.transparent),
       initialRoute: '/',
-      routes: {
-        '/': (context) => SongsListScreen(reqSongController),
-        '/request': (context) => SongSearchScreen(reqSongController),
-        '/owner': (context) {
-          // TODO: FIX
-          print('why am I here?');
-          return PlaylistOwnerScreen("herl", CopyReqSongController('yolo'));
-        }
-      },
+      onGenerateRoute: RouteGenerator.generateRoute,
+      // routes: {
+      //   '/': (context) => SongsListScreen(reqSongController),
+      //   '/request': (context) => SongSearchScreen(reqSongController),
+      //   '/owner': (context) {
+      //     // TODO: FIX
+      //     print('why am I here?');
+      //     return PlaylistOwnerScreen("herl", CopyReqSongController('yolo'));
+      //   }
     );
   }
 }
