@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:music_connections/controllers/copy_req_song_controller.dart';
 import 'package:music_connections/screens/components/song_tile.dart';
-import '../../controllers/requested_song_list_controller.dart';
 import '../../models/song.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RequestedSongsTileList extends StatefulWidget {
-  final ReqSongListController reqSongsController;
+  final CopyReqSongController reqSongsController;
   RequestedSongsTileList(this.reqSongsController);
 
   @override
@@ -24,7 +24,7 @@ class _SongTilesState extends State<RequestedSongsTileList> {
   Widget build(BuildContext context) {
     // i don't like this solution as it makes the view directly talk
     // to the model (FB); is there a better way to do this?
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<DocumentSnapshot>(
         stream: widget.reqSongsController.getStream(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
@@ -32,6 +32,7 @@ class _SongTilesState extends State<RequestedSongsTileList> {
           widget.reqSongsController.updateSongList(snapshot);
 
           List<Song> songList = widget.reqSongsController.getSongs();
+          print(songList);
           return SongTile(songList, null, this.updateVote);
         });
   }

@@ -59,9 +59,9 @@ class PlaylistOwnerScreen extends StatelessWidget {
               height: 10,
             ),
             Expanded(
-                // load from Firebase
-                // child: RequestedSongsTileList(this.reqSongController),
-                child: Container())
+              // load from Firebase
+              child: RequestedSongsTileList(this.reqSongController),
+            )
           ],
         ),
       ),

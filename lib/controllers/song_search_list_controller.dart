@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:music_connections/controllers/copy_req_song_controller.dart';
 import 'package:music_connections/controllers/requested_song_list_controller.dart';
 import 'package:music_connections/services/spotify_service.dart';
 
@@ -8,12 +9,14 @@ import '../models/song.dart';
 
 class SongSearchListController {
   List<Song> _songsList = [];
-  final CollectionReference fbSongs =
-      FirebaseFirestore.instance.collection('songs');
+  late DocumentReference fbSongs;
+  final CopyReqSongController reqSongController;
+  final String docId;
 
-  final ReqSongListController reqSongController;
-
-  SongSearchListController(this.reqSongController);
+  SongSearchListController(this.reqSongController, this.docId) {
+    // TODO: Change to take in DocID
+    fbSongs = FirebaseFirestore.instance.collection('playlists').doc('TESTIN');
+  }
 
   getSongList(userQuery) async {
     await SpotifyService().getSongs(userQuery, _songsList);
@@ -49,22 +52,20 @@ class SongSearchListController {
     bool songExists = reqSongController.containsSong(song);
     if (songExists) return false;
 
-    // check if song already exists in the requestes songs db
-    songExists = await fbSongs.doc(uid.toString()).get().then((docSnapshot) {
-      fbSongs
-          .doc(uid.toString())
-          .set({
-            'songName': songName,
-            'artist': artist,
-            'albumUrl': albumUrl,
-            'popularity': popularity,
-            'voteCount': 0,
-          })
-          .then((value) {})
-          .catchError((error) {});
+    // add to firebase if song doesn't exist in playlist
+    songExists = await fbSongs.get().then((docSnap) {
+      var songListCopy = Map<String, dynamic>.from(docSnap["songs"]);
+      Map<String, dynamic> newSong = {
+        'songName': songName,
+        'artist': artist,
+        'albumUrl': albumUrl,
+        'popularity': popularity,
+        'voteCount': 0
+      };
+      songListCopy.putIfAbsent(uid.toString(), () => newSong);
+      fbSongs.update({'songs': songListCopy});
       return true;
     });
-    // song added to DB
     return true;
   }
 }

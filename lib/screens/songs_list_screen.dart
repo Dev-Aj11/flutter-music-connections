@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
 import 'package:music_connections/controllers/app_controller.dart';
-import 'package:music_connections/controllers/requested_song_list_controller.dart';
+import 'package:music_connections/controllers/copy_req_song_controller.dart';
 import 'package:music_connections/screens/components/settings_dialog.dart';
 import './components/band_info.dart';
 import 'components/requested_songs_tiles_list.dart';
@@ -10,7 +10,7 @@ import 'components/requested_songs_tiles_list.dart';
 // Add artist information in top row
 // Add quick way of giving feedback
 class SongsListScreen extends StatelessWidget {
-  final ReqSongListController reqSongController;
+  final CopyReqSongController reqSongController;
   SongsListScreen(this.reqSongController);
 
   _settingsDialog(BuildContext context) async {

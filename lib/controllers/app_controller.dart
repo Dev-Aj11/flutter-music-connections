@@ -5,9 +5,10 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:music_connections/controllers/copy_req_song_controller.dart';
-import 'requested_song_list_controller.dart';
 
-Map<String, dynamic> currPlaylists = {'TESTIN': ReqSongListController()};
+Map<String, dynamic> currPlaylists = {
+  'TESTIN': CopyReqSongController('TESTIN')
+};
 CollectionReference fbPlaylists =
     FirebaseFirestore.instance.collection('playlists');
 

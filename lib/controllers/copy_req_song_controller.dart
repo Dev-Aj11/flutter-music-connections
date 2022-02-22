@@ -9,16 +9,17 @@ class CopyReqSongController {
 
   CopyReqSongController(String docId) {
     // get songs from firebase
-    fbSongList = FirebaseFirestore.instance.collection('playlists').doc(docId);
+    // TODO: update to take in docId
+    fbSongList =
+        FirebaseFirestore.instance.collection('playlists').doc("TESTIN");
   }
 
   Future getSongsFromFb() async {
     try {
       await fbSongList.get().then((DocumentSnapshot doc) {
-        List<dynamic> songList = doc["songs"];
-        print(songList.length);
-        for (Map<String, dynamic> songInfo in songList) {
-          Song song = Song.fromFirebase(songInfo.values.toList()[0]);
+        Map<String, dynamic> songList = doc["songs"];
+        for (var songId in songList.keys) {
+          Song song = Song.fromFirebase(songList[songId]);
           _songs.add(song);
         }
       });
@@ -64,7 +65,7 @@ class CopyReqSongController {
   Stream<DocumentSnapshot> getStream() {
     return fbSongList.snapshots();
   }
-/*
+
   // increase vote count of song
   updateVoteCount(Song song, bool userVoted) async {
     // update firebase
@@ -79,27 +80,35 @@ class CopyReqSongController {
 
     // update localDB with new information about user
     song.toggleUserVoted();
+
+    // update cloud DB
     await fbSongList
-        .doc(uid.toString())
-        .update({'voteCount': newVoteCount})
+        .get()
+        .then((DocumentSnapshot doc) {
+          // {songId: {songName: "", }, songId: {songName: "", ...}, }
+          Map<String, dynamic> songsCopy = doc["songs"];
+          for (String songId in songsCopy.keys) {
+            if (uid.toString() == songId) {
+              // update vote count
+              songsCopy[songId]["voteCount"] = newVoteCount;
+              fbSongList.update({"songs": songsCopy});
+              break;
+            }
+          }
+        })
         .then((value) => print("user updated vote count"))
         .catchError((onError) => print("Failed to update: $onError"));
-  }*/
-}
-/*
-
-
-
+  }
 
   // triggered when there is a change to firebase songs db
   void updateSongList(snapshot) {
     // A postfix exclamation mark (!) takes the expression on the left and casts it to its underlying non-nullable type
     // In this case, snapshot.data! is casted to _jsonQuerySnapshot
-    var docSnapshots = snapshot.data!.docs;
+    var docSnapshots = snapshot.data!;
 
-    // Firebase structure collection -> Documents Snapshot --> Could contain nested collections
-    for (DocumentSnapshot document in docSnapshots) {
-      Song song = Song.fromFirebase(document);
+    Map<String, dynamic> songList = docSnapshots["songs"];
+    for (String songId in songList.keys) {
+      Song song = Song.fromFirebase(songList[songId]);
 
       // if song already exists, then only update vote count
       // if song doesn't exist, then add song to local db
@@ -114,6 +123,12 @@ class CopyReqSongController {
     }
     _sortByVoteCount();
   }
+}
+/*
+
+
+
+
 
 }
 
