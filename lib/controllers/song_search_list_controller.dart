@@ -1,8 +1,6 @@
 import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:music_connections/controllers/copy_req_song_controller.dart';
-import 'package:music_connections/controllers/requested_song_list_controller.dart';
+import 'package:music_connections/controllers/req_song_controller.dart';
 import 'package:music_connections/services/spotify_service.dart';
 
 import '../models/song.dart';
@@ -10,7 +8,7 @@ import '../models/song.dart';
 class SongSearchListController {
   List<Song> _songsList = [];
   late DocumentReference fbSongs;
-  final CopyReqSongController reqSongController;
+  final ReqSongListController reqSongController;
   final String docId;
 
   SongSearchListController(this.reqSongController, this.docId) {

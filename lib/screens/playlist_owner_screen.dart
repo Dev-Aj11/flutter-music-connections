@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
-import 'package:music_connections/controllers/copy_req_song_controller.dart';
-import 'package:music_connections/controllers/requested_song_list_controller.dart';
+import 'package:music_connections/controllers/req_song_controller.dart';
 import './components/requested_songs_tiles_list.dart';
+import './components/playlist_info.dart';
 
 class PlaylistOwnerScreen extends StatelessWidget {
   final String playlist_name;
-  final CopyReqSongController reqSongController;
+  final ReqSongListController reqSongController;
 
   PlaylistOwnerScreen(this.playlist_name, this.reqSongController) {
-    print('triggered');
+    // TODO: do i need this?
     reqSongController.getSongsFromFb();
   }
 
@@ -47,12 +47,12 @@ class PlaylistOwnerScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // BandInfo(),
+            PlayListInfo(playlist_name, reqSongController.getDocId()),
             SizedBox(
               height: 20,
             ),
             Text(
-              "Requested Songs $playlist_name",
+              "Requested Songs",
               style: kSectionHeadingStyle,
             ),
             SizedBox(
@@ -60,7 +60,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
             ),
             Expanded(
               // load from Firebase
-              child: RequestedSongsTileList(this.reqSongController),
+              child: RequestedSongsTileList(),
             )
           ],
         ),

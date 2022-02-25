@@ -4,18 +4,26 @@
 
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:music_connections/controllers/copy_req_song_controller.dart';
+import 'package:music_connections/controllers/req_song_controller.dart';
 
+/*
+  GLOBAL FIELDS 
+  Meant to be accessed by all views / controllers throughout the app
+*/
 Map<String, dynamic> currPlaylists = {
-  'TESTIN': CopyReqSongController('TESTIN')
+  'TESTIN': ReqSongListController('TESTIN')
 };
 CollectionReference fbPlaylists =
     FirebaseFirestore.instance.collection('playlists');
 
+/*
+  Manages states such that each 6 digit code has a reference to the right playlist 
+  in Firebase.
+*/
 class AppController {
-  // creates a new playlist with given name
-  // returns true if playlist
-  static Future<CopyReqSongController?> createNewPlaylist(String name) async {
+  // creates a new playlist with given name in firebase
+  // @returns: song controller pointer
+  static Future<ReqSongListController?> createNewPlaylist(String name) async {
     // generate random 6 digit code
     String randCode = _getRandSixDigitCode();
     try {
@@ -29,11 +37,12 @@ class AppController {
       print(e.toString());
     }
 
+    // add to  global local database
     currPlaylists.update(
       randCode,
       // ignore incoming value
-      (value) => CopyReqSongController(randCode),
-      ifAbsent: () => CopyReqSongController(randCode),
+      (_) => ReqSongListController(randCode),
+      ifAbsent: () => ReqSongListController(randCode),
     );
 
     return currPlaylists[randCode];
@@ -59,27 +68,20 @@ class AppController {
     return randCode;
   }
 
-  // returns true if playlist for code exists & adds to local db
-  // returns false if playlist for given code doesn't exist
-  Future<bool?> getPlaylistFromFb(String code) async {
-    // loads all playlists from Firebase
-    // such that the new Map is:
-    try {
-      await fbPlaylists.get().then((QuerySnapshot querySnapshot) {
-        var docs = querySnapshot.docs;
-        for (DocumentSnapshot doc in docs) {
-          if (doc.toString() == code) {
-            // ReqSongListController should take a "code" in constructor
-            // so it pulls from the firebase obj.
-            currPlaylists = {code: CopyReqSongController(code)};
-            return true;
-          }
+  // @returns true if playlist for 6 digit code exists & adds to local db
+  // @returns false if playlist for given code doesn't exist in firebase
+  static Future<bool> isValidPlaylist(String code) async {
+    bool playlistExists = false;
+    await fbPlaylists.get().then((QuerySnapshot querySnapshot) {
+      var docs = querySnapshot.docs;
+      for (DocumentSnapshot doc in docs) {
+        if (doc.toString() == code) {
+          currPlaylists = {code: ReqSongListController(code)};
+          playlistExists = true;
+          break;
         }
-        return false;
-      });
-    } catch (e) {
-      print(e);
-    }
-    return null;
+      }
+    });
+    return playlistExists;
   }
 }

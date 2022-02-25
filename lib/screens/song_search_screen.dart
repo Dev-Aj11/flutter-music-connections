@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
-import 'package:music_connections/controllers/copy_req_song_controller.dart';
-import 'package:music_connections/controllers/requested_song_list_controller.dart';
+import 'package:music_connections/controllers/req_song_controller.dart';
 import 'package:music_connections/controllers/song_search_list_controller.dart';
 import '../models/song.dart';
 import './components/song_tile.dart';
 
 class SongSearchScreen extends StatefulWidget {
-  final CopyReqSongController reqSongController;
+  final ReqSongListController reqSongController;
   SongSearchScreen(this.reqSongController);
 
   @override

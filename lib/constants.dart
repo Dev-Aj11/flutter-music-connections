@@ -14,6 +14,21 @@ const kSearchFieldDecoration = InputDecoration(
   suffixIcon: Icon(Icons.search),
 );
 
+var kPlaylistCodeDescStyle = TextStyle(
+  color: Colors.grey.shade600,
+  fontWeight: FontWeight.w600,
+);
+
+const kPlaylistCodeNameStyle = TextStyle(
+  color: Colors.blue,
+  fontWeight: FontWeight.w600,
+  fontSize: 16,
+);
+
+const kPlaylistCodeStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 16,
+);
 enum Reactions {
   like,
   love,
