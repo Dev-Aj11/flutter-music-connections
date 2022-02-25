@@ -15,18 +15,18 @@ class RequestedSongsTileList extends StatefulWidget {
 class _SongTilesState extends State<RequestedSongsTileList> {
   late ReqSongListController reqSongController;
   bool reqSongListReady = false;
-  int songListEmpty = 0;
 
   @override
   void initState() {
     super.initState();
     reqSongController = ReqSongListController(widget.playlistCode);
     _createSongList();
+    print('from req songs tiles list: ${widget.playlistCode}');
   }
 
   _createSongList() async {
     // init adds songs from firebase to local copy
-    songListEmpty = await reqSongController.getSongsFromFb();
+    await reqSongController.getSongsFromFb();
     setState(() {
       reqSongListReady = true;
     });
@@ -45,10 +45,6 @@ class _SongTilesState extends State<RequestedSongsTileList> {
       return Container(child: CircularProgressIndicator());
     }
 
-    if (songListEmpty == -1) {
-      return Container(child: Text("No songs added to list yet"));
-    }
-
     // i don't like this solution as it makes the view directly talk
     // to the model (FB); is there a better way to do this?
     return StreamBuilder<DocumentSnapshot>(
@@ -59,6 +55,9 @@ class _SongTilesState extends State<RequestedSongsTileList> {
           reqSongController.updateSongList(snapshot);
 
           List<Song> songList = reqSongController.getSongs();
+          if (songList.isEmpty) {
+            return Text('No songs added to queue.');
+          }
           return SongTile(songList, null, this.updateVote);
         });
   }

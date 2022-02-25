@@ -13,6 +13,8 @@ class SongSearchListController {
   final String playlistCode;
 
   SongSearchListController(this.playlistCode) {
+    print(this.playlistCode);
+
     reqSongController = currPlaylists[playlistCode];
     // TODO: Change to take in DocID
     fbSongs =

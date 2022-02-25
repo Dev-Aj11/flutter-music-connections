@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:music_connections/controllers/app_controller.dart';
 import 'package:music_connections/screens/home_screen.dart';
 import 'package:music_connections/screens/playlist_owner_screen.dart';
 import 'package:music_connections/screens/song_search_screen.dart';
@@ -24,11 +23,9 @@ class RouteGenerator {
       case '/owner':
         // see: https://stackoverflow.com/questions/60245865/the-operator-isnt-defined-for-the-class-object-dart
         // on why casting to map is needed
-        var x = args as Map;
 
         return MaterialPageRoute(
-            builder: (_) =>
-                PlaylistOwnerScreen(x["playlistName"], x["controller"]));
+            builder: (_) => PlaylistOwnerScreen(args.toString()));
 
       // args = playlist name
       default:

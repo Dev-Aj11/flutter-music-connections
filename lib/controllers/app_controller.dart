@@ -23,7 +23,7 @@ CollectionReference fbPlaylists =
 class AppController {
   // creates a new playlist with given name in firebase
   // @returns: song controller pointer
-  static Future<ReqSongListController?> createNewPlaylist(String name) async {
+  static Future<String?> createNewPlaylist(String name) async {
     // generate random 6 digit code
     String randCode = _getRandSixDigitCode();
     try {
@@ -45,7 +45,7 @@ class AppController {
       ifAbsent: () => ReqSongListController(randCode),
     );
 
-    return currPlaylists[randCode];
+    return randCode;
   }
 
   // generates a unique, non-repeating 6 digit char sequence

@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
-import 'package:music_connections/controllers/req_song_controller.dart';
 import './components/requested_songs_tiles_list.dart';
 import './components/playlist_info.dart';
 
 class PlaylistOwnerScreen extends StatelessWidget {
-  final String playlist_name;
-  final ReqSongListController reqSongController;
+  final String playlistCode;
 
-  PlaylistOwnerScreen(this.playlist_name, this.reqSongController) {
-    // TODO: do i need this?
-    reqSongController.getSongsFromFb();
-  }
+  PlaylistOwnerScreen(this.playlistCode);
 
   @override
   Widget build(BuildContext context) {
+    print(playlistCode);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -34,7 +30,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // pull up screen allowing user to add a new song
-          Navigator.pushNamed(context, '/request');
+          Navigator.pushNamed(context, '/request', arguments: playlistCode);
         },
         icon: Icon(Icons.music_note_outlined),
         label: Text(
@@ -47,7 +43,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            PlayListInfo(reqSongController.getPlaylistCode()),
+            PlayListInfo(playlistCode),
             SizedBox(
               height: 20,
             ),
@@ -60,7 +56,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
             ),
             Expanded(
               // load from Firebase
-              child: RequestedSongsTileList('TESTIN'),
+              child: RequestedSongsTileList(playlistCode),
             )
           ],
         ),
