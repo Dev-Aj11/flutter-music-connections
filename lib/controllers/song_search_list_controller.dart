@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:music_connections/controllers/app_controller.dart';
 import 'package:music_connections/controllers/req_song_controller.dart';
 import 'package:music_connections/services/spotify_service.dart';
 
@@ -8,12 +9,14 @@ import '../models/song.dart';
 class SongSearchListController {
   List<Song> _songsList = [];
   late DocumentReference fbSongs;
-  final ReqSongListController reqSongController;
-  final String docId;
+  late ReqSongListController reqSongController;
+  final String playlistCode;
 
-  SongSearchListController(this.reqSongController, this.docId) {
+  SongSearchListController(this.playlistCode) {
+    reqSongController = currPlaylists[playlistCode];
     // TODO: Change to take in DocID
-    fbSongs = FirebaseFirestore.instance.collection('playlists').doc('TESTIN');
+    fbSongs =
+        FirebaseFirestore.instance.collection('playlists').doc(playlistCode);
   }
 
   getSongList(userQuery) async {
@@ -52,7 +55,10 @@ class SongSearchListController {
 
     // add to firebase if song doesn't exist in playlist
     songExists = await fbSongs.get().then((docSnap) {
-      var songListCopy = Map<String, dynamic>.from(docSnap["songs"]);
+      var songListCopy = {};
+      if (docSnap["songs"].length != 0) {
+        songListCopy = Map<String, dynamic>.from(docSnap["songs"]);
+      }
       Map<String, dynamic> newSong = {
         'songName': songName,
         'artist': artist,

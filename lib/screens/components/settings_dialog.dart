@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../controllers/app_controller.dart';
+
 enum Settings { create, join }
 
 showPlaylistOptionsDialog(BuildContext context) async {
@@ -44,7 +46,12 @@ showJoinPlaylistDialog(BuildContext context) async {
           actions: [
             TextButton(
               style: ButtonStyle(),
-              onPressed: () => Navigator.pop(context, userValue),
+              onPressed: () async {
+                if (await AppController.isValidPlaylist(userValue)) {
+                  // show error & ask to retry code
+                  Navigator.pop(context, userValue);
+                }
+              },
               child: Text("Submit"),
             ),
           ],

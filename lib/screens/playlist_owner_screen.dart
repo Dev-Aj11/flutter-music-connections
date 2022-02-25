@@ -47,7 +47,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            PlayListInfo(playlist_name, reqSongController.getDocId()),
+            PlayListInfo(reqSongController.getPlaylistCode()),
             SizedBox(
               height: 20,
             ),
@@ -60,7 +60,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
             ),
             Expanded(
               // load from Firebase
-              child: RequestedSongsTileList(),
+              child: RequestedSongsTileList('TESTIN'),
             )
           ],
         ),

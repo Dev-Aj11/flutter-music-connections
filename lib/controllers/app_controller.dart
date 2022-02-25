@@ -75,7 +75,7 @@ class AppController {
     await fbPlaylists.get().then((QuerySnapshot querySnapshot) {
       var docs = querySnapshot.docs;
       for (DocumentSnapshot doc in docs) {
-        if (doc.toString() == code) {
+        if (doc.id == code) {
           currPlaylists = {code: ReqSongListController(code)};
           playlistExists = true;
           break;

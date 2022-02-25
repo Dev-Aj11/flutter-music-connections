@@ -5,25 +5,28 @@ import '../components/song_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RequestedSongsTileList extends StatefulWidget {
-  const RequestedSongsTileList({Key? key}) : super(key: key);
+  final String playlistCode;
+  RequestedSongsTileList(this.playlistCode);
 
   @override
   _SongTilesState createState() => _SongTilesState();
 }
 
 class _SongTilesState extends State<RequestedSongsTileList> {
-  ReqSongListController reqSongController = ReqSongListController("TESTIN");
+  late ReqSongListController reqSongController;
   bool reqSongListReady = false;
+  int songListEmpty = 0;
 
   @override
   void initState() {
     super.initState();
+    reqSongController = ReqSongListController(widget.playlistCode);
     _createSongList();
   }
 
   _createSongList() async {
     // init adds songs from firebase to local copy
-    await reqSongController.getSongsFromFb();
+    songListEmpty = await reqSongController.getSongsFromFb();
     setState(() {
       reqSongListReady = true;
     });
@@ -40,6 +43,10 @@ class _SongTilesState extends State<RequestedSongsTileList> {
   Widget build(BuildContext context) {
     if (!reqSongListReady) {
       return Container(child: CircularProgressIndicator());
+    }
+
+    if (songListEmpty == -1) {
+      return Container(child: Text("No songs added to list yet"));
     }
 
     // i don't like this solution as it makes the view directly talk

@@ -6,8 +6,8 @@ import '../models/song.dart';
 import './components/song_tile.dart';
 
 class SongSearchScreen extends StatefulWidget {
-  final ReqSongListController reqSongController;
-  SongSearchScreen(this.reqSongController);
+  String playlistCode;
+  SongSearchScreen(this.playlistCode);
 
   @override
   _SongSearchScreenState createState() => _SongSearchScreenState();
@@ -23,7 +23,7 @@ class _SongSearchScreenState extends State<SongSearchScreen> {
   void initState() {
     super.initState();
     // TODO: pass playlist ID
-    songs = SongSearchListController(widget.reqSongController, 'TESTIN');
+    songs = SongSearchListController(widget.playlistCode);
   }
 
   void getSongs() async {
