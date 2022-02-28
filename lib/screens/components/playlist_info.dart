@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
 import 'package:flutter/services.dart';
-import 'package:music_connections/controllers/app_controller.dart';
 
 class PlayListInfo extends StatefulWidget {
   final String playlistCode;
@@ -13,21 +12,6 @@ class PlayListInfo extends StatefulWidget {
 }
 
 class _PlayListInfoState extends State<PlayListInfo> {
-  String playlistName = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _getPlaylistName();
-  }
-
-  _getPlaylistName() async {
-    var reqSongsController = currPlaylists[widget.playlistCode];
-    playlistName = await reqSongsController.getPlaylistName();
-    print(playlistName);
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,47 +21,69 @@ class _PlayListInfoState extends State<PlayListInfo> {
           "Playlist Code",
           style: kSectionHeadingStyle,
         ),
-        Card(
-          child: Container(
-            padding: EdgeInsets.all(12),
-            child: Column(
-              children: [
-                Text(
-                  "Invite folks to your playlist:",
-                  style: kPlaylistCodeDescStyle,
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              InputChip(
+                onPressed: () {
+                  // copy to clipboard
+                  Clipboard.setData(ClipboardData(text: widget.playlistCode));
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
                 ),
-                SizedBox(
+                side:
+                    BorderSide(style: BorderStyle.solid, color: kPrimaryColor),
+                label: Container(
                   width: double.infinity,
-                  child: Center(
-                    child: Text(
-                      " ${this.playlistName} ",
-                      style: kPlaylistCodeNameStyle,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "${widget.playlistCode}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.copy,
+                        size: 20,
+                      )
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 4,
-                ),
-                InputChip(
-                  onPressed: () {
-                    // copy to clipboard
-                    Clipboard.setData(ClipboardData(text: widget.playlistCode));
-                  },
-                  padding: EdgeInsets.all(12),
-                  label: Text(
-                    "${widget.playlistCode}",
-                    style: kPlaylistCodeStyle,
+                backgroundColor: Colors.white,
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.music_note,
+                    size: 18,
+                    color: kPrimaryColor,
                   ),
-                  backgroundColor: Colors.blue,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Text("Tap to copy", style: kPlaylistCodeDescStyle),
-              ],
-            ),
+                  SizedBox(
+                    width: 4,
+                  ),
+                  Text("Tap to copy & share with your party friends",
+                      style: kPlaylistCodeDescStyle),
+                ],
+              )
+            ],
           ),
         )
       ],

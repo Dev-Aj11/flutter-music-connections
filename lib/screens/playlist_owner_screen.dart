@@ -4,6 +4,8 @@ import 'package:music_connections/screens/components/settings_dialog.dart';
 import './components/requested_songs_tiles_list.dart';
 import './components/playlist_info.dart';
 
+// TODO: Remove this screen & leverage styling from Viewer Screen;
+// Add bool property isOwner
 class PlaylistOwnerScreen extends StatelessWidget {
   final String playlistCode;
 

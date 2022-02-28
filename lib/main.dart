@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:music_connections/route_generator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -20,7 +21,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(dividerColor: Colors.transparent, fontFamily: "Nunito"),
+      theme: ThemeData(
+        dividerColor: Colors.transparent,
+        fontFamily: "Nunito",
+        backgroundColor: Color(0xFFF9F9F9),
+      ),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );

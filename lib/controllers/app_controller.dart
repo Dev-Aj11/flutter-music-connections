@@ -23,14 +23,14 @@ CollectionReference fbPlaylists =
 class AppController {
   // creates a new playlist with given name in firebase
   // @returns: song controller pointer
-  static Future<String?> createNewPlaylist(String name) async {
+  static Future<String?> createNewPlaylist() async {
     // generate random 6 digit code
     String randCode = _getRandSixDigitCode();
     try {
       // update firebase with randCode & playlist Name
       await fbPlaylists
           .doc(randCode)
-          .set({'playlistName': name, 'songs': []})
+          .set({'songs': []})
           .then((value) => print("playlist added successfully"))
           .catchError((onError) => print("Failed to add: $onError"));
     } catch (e) {

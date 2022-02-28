@@ -11,8 +11,6 @@ class PlaylistViewerScreen extends StatelessWidget {
   final String playlistCode;
 
   PlaylistViewerScreen(this.playlistCode) {
-    print('from viewer screen');
-    print(playlistCode);
     reqSongController = currPlaylists[playlistCode];
   }
 
@@ -20,9 +18,17 @@ class PlaylistViewerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Music Connections",
-          style: kAppBarHeadingStyle,
+        backgroundColor: Color(0xfff9f9f9),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
+        centerTitle: false,
+        title: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 10, 10, 0),
+          child: const Text(
+            "Party Playlist",
+            textAlign: TextAlign.left,
+            style: kAppBarHeadingStyle,
+          ),
         ),
         actions: [
           IconButton(
@@ -35,6 +41,7 @@ class PlaylistViewerScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: kPrimaryColor,
         onPressed: () {
           // pull up screen allowing user to add a new song
           Navigator.pushNamed(context, '/request', arguments: playlistCode);
@@ -46,7 +53,7 @@ class PlaylistViewerScreen extends StatelessWidget {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 20, left: 24, right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

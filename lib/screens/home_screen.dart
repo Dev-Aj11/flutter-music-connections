@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:music_connections/screens/components/settings_dialog.dart';
+import 'package:flutter/services.dart';
+import 'package:music_connections/screens/components/cta_btn.dart';
 import '../constants.dart';
 import '../controllers/app_controller.dart';
 
@@ -8,95 +9,79 @@ const music_party_image = 'lib/assets/images/music_party.png';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 80),
-        width: double.infinity,
-        color: Color(0xfff9f9f9),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "PLAY MY SONG",
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 24,
+    // black status bar
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.black,
+      ),
+      child: Scaffold(
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 80),
+          width: double.infinity,
+          color: Color(0xfff9f9f9),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "PLAY MY SONG",
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 24,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(style: kAppDescriptionStyle, children: [
-                TextSpan(text: "Request, Vote, & Play the most "),
-                TextSpan(
-                  text: "poppin'",
-                  style: kAppDescriptionStyle.copyWith(
-                    color: kPrimaryColor,
+              SizedBox(
+                height: 10,
+              ),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(style: kAppDescriptionStyle, children: [
+                  TextSpan(text: "Request, Vote, & Play the most "),
+                  TextSpan(
+                    text: "poppin'",
+                    style: kAppDescriptionStyle.copyWith(color: kPrimaryColor),
                   ),
-                ),
-                TextSpan(text: "music")
-              ]),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Image.asset(
-              music_party_image,
-              width: 300,
-              height: 300,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // ask to enter 6 digit code
-                    Navigator.pushNamed(context, '/join');
-                  },
-                  style: ElevatedButton.styleFrom(primary: kPrimaryColor),
-                  child: Container(
-                    width: double.infinity,
-                    height: 48,
-                    child: Center(
-                      child: Text(
-                        "Join Playlist",
-                        textAlign: TextAlign.center,
-                        style: kPrimaryActionBtnStyle,
-                      ),
-                    ),
+                  TextSpan(text: "music")
+                ]),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Image.asset(
+                music_party_image,
+                width: 300,
+                height: 300,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Column(
+                children: [
+                  CTA_Btn(
+                    () => Navigator.pushNamed(context, '/join'),
+                    "Join Playlist",
+                    BtnStyle.primary,
                   ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // go to owner screen
-                  },
-                  style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFFFFFFF),
-                      side: BorderSide(color: kPrimaryColor)),
-                  child: Container(
-                    width: double.infinity,
-                    height: 48,
-                    child: Center(
-                      child: Text(
-                        "Create Playlist",
-                        textAlign: TextAlign.center,
-                        style: kPrimaryActionBtnStyle.copyWith(
-                            color: kPrimaryColor),
-                      ),
-                    ),
+                  SizedBox(
+                    height: 16,
                   ),
-                ),
-              ],
-            )
-          ],
+                  CTA_Btn(
+                    () async {
+                      // create playlist in Firebase
+                      var playlistCode =
+                          await AppController.createNewPlaylist();
+
+                      // Navigate to next screen
+                      Navigator.pushReplacementNamed(context, '/owner',
+                          arguments: playlistCode);
+                    },
+                    "Create Playlist",
+                    BtnStyle.secondary,
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

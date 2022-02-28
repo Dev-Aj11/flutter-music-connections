@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
+import 'package:music_connections/screens/components/cta_btn.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class JoinPlaylistScreen extends StatelessWidget {
+import '../controllers/app_controller.dart';
+import 'components/settings_dialog.dart';
+
+class JoinPlaylistScreen extends StatefulWidget {
+  @override
+  State<JoinPlaylistScreen> createState() => _JoinPlaylistScreenState();
+}
+
+class _JoinPlaylistScreenState extends State<JoinPlaylistScreen> {
+  String userPlaylistCode = "";
+
+  void onPressed() async {
+    // check if it's a valid 6 digit code;
+    if (await AppController.isValidPlaylist(userPlaylistCode)) {
+      Navigator.pushNamedAndRemoveUntil(context, '/viewer', (_) => false,
+          arguments: userPlaylistCode);
+    } else {
+      showInvalidCodeDialog(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,28 +71,12 @@ class JoinPlaylistScreen extends StatelessWidget {
                   selectedColor: kPrimaryColor,
                 ),
                 onChanged: (value) {
-                  print(value);
+                  userPlaylistCode = value;
                 }),
             SizedBox(
               height: 30,
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.pushNamed(context, '/join');
-              },
-              style: ElevatedButton.styleFrom(primary: kPrimaryColor),
-              child: Container(
-                width: double.infinity,
-                height: 48,
-                child: Center(
-                  child: Text(
-                    "Submit",
-                    textAlign: TextAlign.center,
-                    style: kPrimaryActionBtnStyle,
-                  ),
-                ),
-              ),
-            ),
+            CTA_Btn(onPressed, "Submit", BtnStyle.primary)
           ],
         ),
       ),

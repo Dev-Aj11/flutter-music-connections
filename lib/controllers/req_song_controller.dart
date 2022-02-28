@@ -10,7 +10,6 @@ class ReqSongListController {
 
   ReqSongListController(String playlistCode) {
     // get songs from firebase
-    // TODO: update to take in docId
     fbSongList =
         FirebaseFirestore.instance.collection('playlists').doc(playlistCode);
     _playlistCode = playlistCode;
@@ -30,15 +29,6 @@ class ReqSongListController {
     } catch (e) {
       print(e.toString());
     }
-  }
-
-  // @return: play list name if it exists or empty string
-  Future<String?> getPlaylistName() async {
-    String playlistName = "";
-    await fbSongList.get().then((doc) {
-      playlistName = doc["playlistName"];
-    });
-    return playlistName;
   }
 
   bool containsSong(Song s) {

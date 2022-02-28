@@ -48,10 +48,18 @@ class _SongSearchScreenState extends State<SongSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff9f9f9),
       appBar: AppBar(
-        title: Text(
-          "Request a song",
-          style: kAppBarHeadingStyle,
+        elevation: 0,
+        backgroundColor: Color(0xfff9f9f9),
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 10, 0),
+          child: const Text(
+            "Request a Song",
+            textAlign: TextAlign.left,
+            style: kAppBarHeadingStyle,
+          ),
         ),
       ),
       body: Container(
@@ -62,6 +70,7 @@ class _SongSearchScreenState extends State<SongSearchScreen> {
             // Search Bar
             TextField(
               decoration: kSearchFieldDecoration,
+              cursorColor: kPrimaryColor,
               onChanged: (value) {
                 userQuery = value;
                 getSongs();

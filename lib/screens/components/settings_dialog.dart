@@ -17,10 +17,8 @@ settingsDialog(BuildContext context) async {
 
       break;
     case Settings.create:
-      // ask user to name playlist & add to firebase
-      var playlistName = await showPlaylistCreationDialog(context, "");
-      if (playlistName == null) return;
-      var playlistCode = await AppController.createNewPlaylist(playlistName);
+      // create new playlist & add to firebase
+      var playlistCode = await AppController.createNewPlaylist();
 
       // pass playlist code to next screen
       Navigator.pushReplacementNamed(context, '/owner',
