@@ -17,25 +17,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // ReqSongListController reqSongController = ReqSongListController();
-  // bool reqSongListReady = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // _createSongList();
-  }
-
-  // _createSongList() async {
-  //   // init adds songs from firebase to local copy, so other apps of the
-  //   // app can pull it from here.
-  //   // await reqSongController.getSongsFromFb();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(dividerColor: Colors.transparent),
+      theme: ThemeData(dividerColor: Colors.transparent, fontFamily: "Nunito"),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );

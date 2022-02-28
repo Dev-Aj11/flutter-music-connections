@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 const kSectionHeadingStyle =
     TextStyle(fontSize: 22, fontWeight: FontWeight.w700);
+const kPrimaryColor = Color(0xFFFF5722);
+const kPrimaryActionBtnStyle = TextStyle(
+  fontWeight: FontWeight.w600,
+  fontSize: 22,
+);
 const kAppBarHeadingStyle = TextStyle(color: Colors.white);
 const kSearchFieldDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -17,6 +22,12 @@ const kSearchFieldDecoration = InputDecoration(
 var kPlaylistCodeDescStyle = TextStyle(
   color: Colors.grey.shade600,
   fontWeight: FontWeight.w600,
+);
+
+const kAppDescriptionStyle = TextStyle(
+  fontWeight: FontWeight.w800,
+  fontSize: 36,
+  color: Colors.black,
 );
 
 const kPlaylistCodeNameStyle = TextStyle(

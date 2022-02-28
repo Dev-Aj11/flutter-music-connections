@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
+import 'package:music_connections/controllers/app_controller.dart';
+import 'package:music_connections/controllers/req_song_controller.dart';
+import 'package:music_connections/screens/components/playlist_info.dart';
 import 'package:music_connections/screens/components/settings_dialog.dart';
-import './components/requested_songs_tiles_list.dart';
-import './components/playlist_info.dart';
+import 'components/requested_songs_tiles_list.dart';
 
-class PlaylistOwnerScreen extends StatelessWidget {
+class PlaylistViewerScreen extends StatelessWidget {
+  late ReqSongListController reqSongController;
   final String playlistCode;
 
-  PlaylistOwnerScreen(this.playlistCode);
+  PlaylistViewerScreen(this.playlistCode) {
+    print('from viewer screen');
+    print(playlistCode);
+    reqSongController = currPlaylists[playlistCode];
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(playlistCode);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -44,7 +50,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            PlayListInfo(playlistCode),
+            PlayListInfo(reqSongController.getPlaylistCode()),
             SizedBox(
               height: 20,
             ),
@@ -57,7 +63,7 @@ class PlaylistOwnerScreen extends StatelessWidget {
             ),
             Expanded(
               // load from Firebase
-              child: RequestedSongsTileList(playlistCode),
+              child: RequestedSongsTileList(this.playlistCode),
             )
           ],
         ),

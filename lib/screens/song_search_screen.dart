@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
-import 'package:music_connections/controllers/req_song_controller.dart';
 import 'package:music_connections/controllers/song_search_list_controller.dart';
 import '../models/song.dart';
 import './components/song_tile.dart';
 
 class SongSearchScreen extends StatefulWidget {
-  String playlistCode;
+  final String playlistCode;
   SongSearchScreen(this.playlistCode);
 
   @override
@@ -22,7 +21,7 @@ class _SongSearchScreenState extends State<SongSearchScreen> {
   @override
   void initState() {
     super.initState();
-    // TODO: pass playlist ID
+    // get initial song list
     songs = SongSearchListController(widget.playlistCode);
   }
 

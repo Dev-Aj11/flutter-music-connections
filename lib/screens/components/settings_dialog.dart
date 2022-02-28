@@ -4,6 +4,34 @@ import '../../controllers/app_controller.dart';
 
 enum Settings { create, join }
 
+settingsDialog(BuildContext context) async {
+  switch (await showPlaylistOptionsDialog(context)) {
+    case Settings.join:
+      // @return: valid 6 digit playlist code inputted by user
+      var playlistCode = await showJoinPlaylistDialog(context);
+      if (playlistCode == null) return;
+
+      // pass playlist code to the viewer screen via onGenerateRoute
+      Navigator.pushReplacementNamed(context, '/viewer',
+          arguments: playlistCode);
+
+      break;
+    case Settings.create:
+      // ask user to name playlist & add to firebase
+      var playlistName = await showPlaylistCreationDialog(context, "");
+      if (playlistName == null) return;
+      var playlistCode = await AppController.createNewPlaylist(playlistName);
+
+      // pass playlist code to next screen
+      Navigator.pushReplacementNamed(context, '/owner',
+          arguments: playlistCode);
+      break;
+    case null:
+      // dialog dismissed by itself
+      break;
+  }
+}
+
 showPlaylistOptionsDialog(BuildContext context) async {
   return await showDialog(
     context: context,
@@ -31,7 +59,6 @@ showPlaylistOptionsDialog(BuildContext context) async {
 }
 
 showJoinPlaylistDialog(BuildContext context) async {
-  // TODO: limit to only 6 characters
   String userValue = "";
   return await showDialog(
       context: context,
@@ -50,6 +77,9 @@ showJoinPlaylistDialog(BuildContext context) async {
                 if (await AppController.isValidPlaylist(userValue)) {
                   // show error & ask to retry code
                   Navigator.pop(context, userValue);
+                } else {
+                  showInvalidCodeDialog(context);
+                  userValue = "";
                 }
               },
               child: Text("Submit"),
@@ -81,4 +111,23 @@ showPlaylistCreationDialog(BuildContext context, String userValue) async {
       );
     },
   );
+}
+
+showInvalidCodeDialog(BuildContext context) async {
+  return await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Invalid Playlist Code"),
+          content: Text("Please enter a valid 6 digit playlist code"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            )
+          ],
+        );
+      });
 }

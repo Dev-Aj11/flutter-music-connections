@@ -40,6 +40,7 @@ dependencies:
   cloud_firestore: ^3.1.7
   uuid: ^3.0.5
   url_launcher: ^6.0.20
+  pin_code_fields: ^7.3.0
 
 dev_dependencies:
   flutter_test:
@@ -64,8 +65,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - fonts/
+  assets:
+    - lib/assets/images/music_party.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -79,9 +80,18 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+  - family: Nunito
+    fonts: 
+      - asset: lib/fonts/Nunito-Bold.ttf
+      - asset: lib/fonts/Nunito-ExtraBold.ttf
+      - asset: lib/fonts/Nunito-Light.ttf
+      - asset: lib/fonts/Nunito-Medium.ttf
+      - asset: lib/fonts/Nunito-Regular.ttf
+      - asset: lib/fonts/Nunito-SemiBold.ttf
   - family:  AppIcons
     fonts:
       - asset: lib/fonts/AppIcons.ttf
+      
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
