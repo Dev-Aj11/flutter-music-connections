@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:music_connections/constants.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../controllers/app_controller.dart';
 
@@ -41,14 +43,16 @@ showPlaylistOptionsDialog(BuildContext context) async {
             onPressed: () {
               Navigator.pop(context, Settings.join);
             },
-            child: Text('Join Party Playlist'),
+            child: Text('Join Party Playlist',
+                style: TextStyle(color: kPrimaryColor)),
           ),
           SimpleDialogOption(
             onPressed: () {
               Navigator.pop(context, Settings.create);
             },
             // create party playlist
-            child: Text("Create Party Playlist"),
+            child: Text("Create Party Playlist",
+                style: TextStyle(color: kPrimaryColor)),
           ),
         ],
       );
@@ -63,11 +67,18 @@ showJoinPlaylistDialog(BuildContext context) async {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Enter Playlist Code"),
-          content: TextField(
-            onChanged: (value) {
-              userValue = value;
-            },
-          ),
+          content: PinCodeTextField(
+              appContext: context,
+              length: 6,
+              cursorColor: kPrimaryColor,
+              pinTheme: PinTheme(
+                activeColor: kPrimaryColor,
+                selectedColor: kPrimaryColor,
+                fieldWidth: 24,
+              ),
+              onChanged: (value) {
+                userValue = value;
+              }),
           actions: [
             TextButton(
               style: ButtonStyle(),
@@ -80,35 +91,11 @@ showJoinPlaylistDialog(BuildContext context) async {
                   userValue = "";
                 }
               },
-              child: Text("Submit"),
+              child: Text("Submit", style: TextStyle(color: kPrimaryColor)),
             ),
           ],
         );
       });
-}
-
-showPlaylistCreationDialog(BuildContext context, String userValue) async {
-  return await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Enter Playlist Name"),
-        content: TextField(
-          onChanged: (value) {
-            userValue = value;
-          },
-        ),
-        // button enabled only if less than X char
-        actions: [
-          TextButton(
-            style: ButtonStyle(),
-            onPressed: () => Navigator.pop(context, userValue),
-            child: Text("Submit"),
-          )
-        ],
-      );
-    },
-  );
 }
 
 showInvalidCodeDialog(BuildContext context) async {
@@ -123,7 +110,10 @@ showInvalidCodeDialog(BuildContext context) async {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: Text(
+                "OK",
+                style: TextStyle(color: kPrimaryColor),
+              ),
             )
           ],
         );

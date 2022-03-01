@@ -9,11 +9,9 @@ import '../models/song.dart';
 class SongSearchListController {
   List<Song> _songsList = [];
   late DocumentReference fbSongs;
-  late ReqSongListController reqSongController;
   final String playlistCode;
 
   SongSearchListController(this.playlistCode) {
-    reqSongController = currPlaylists[playlistCode];
     fbSongs =
         FirebaseFirestore.instance.collection('playlists').doc(playlistCode);
   }
@@ -49,7 +47,7 @@ class SongSearchListController {
     int uid = song.getUID();
 
     // if song already exists in DB, return false (song will not be added)
-    bool songExists = reqSongController.containsSong(song);
+    bool songExists = currPlaylists[playlistCode].containsSong(song);
     if (songExists) return false;
 
     // add to firebase if song doesn't exist in playlist

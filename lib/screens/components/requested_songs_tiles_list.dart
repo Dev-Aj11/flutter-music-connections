@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_connections/controllers/app_controller.dart';
 import 'package:music_connections/controllers/req_song_controller.dart';
 import '../../models/song.dart';
 import '../components/song_tile.dart';
@@ -6,7 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RequestedSongsTileList extends StatefulWidget {
   final String playlistCode;
-  RequestedSongsTileList(this.playlistCode);
+  final bool isOwner;
+  RequestedSongsTileList(this.playlistCode, this.isOwner);
 
   @override
   _SongTilesState createState() => _SongTilesState();
@@ -19,9 +21,11 @@ class _SongTilesState extends State<RequestedSongsTileList> {
   @override
   void initState() {
     super.initState();
-    reqSongController = ReqSongListController(widget.playlistCode);
+
+    // update song list controller tied to playlist code, so
+    // instance of _songs can be shared across classes
+    reqSongController = currPlaylists[widget.playlistCode];
     _createSongList();
-    print('from req songs tiles list: ${widget.playlistCode}');
   }
 
   _createSongList() async {
@@ -37,6 +41,10 @@ class _SongTilesState extends State<RequestedSongsTileList> {
     await reqSongController.updateVoteCount(song, userVoted);
     // don't need to call setState here since
     // StreamBuilder<> will automatically do so when value is updated
+  }
+
+  void removeSong(Song song) async {
+    await reqSongController.removeSongFromFb(song);
   }
 
   @override
@@ -58,7 +66,13 @@ class _SongTilesState extends State<RequestedSongsTileList> {
           if (songList.isEmpty) {
             return Text('No songs added to queue.');
           }
-          return SongTile(songList, null, this.updateVote);
+          return SongTile(
+            songList,
+            this.updateVote,
+            false, // not search screen
+            widget.isOwner, // playlist owner
+            removeSong,
+          );
         });
   }
 }

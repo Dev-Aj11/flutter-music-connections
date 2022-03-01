@@ -10,9 +10,7 @@ import 'package:music_connections/controllers/req_song_controller.dart';
   GLOBAL FIELDS 
   Meant to be accessed by all views / controllers throughout the app
 */
-Map<String, dynamic> currPlaylists = {
-  'TESTIN': ReqSongListController('TESTIN')
-};
+Map<String, dynamic> currPlaylists = {};
 CollectionReference fbPlaylists =
     FirebaseFirestore.instance.collection('playlists');
 

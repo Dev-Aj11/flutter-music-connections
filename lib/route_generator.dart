@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/screens/join_playlist_screen.dart';
 import 'package:music_connections/screens/home_screen.dart';
-import 'package:music_connections/screens/playlist_owner_screen.dart';
 import 'package:music_connections/screens/song_search_screen.dart';
 import 'package:music_connections/screens/playlist_viewer_screen.dart';
 
@@ -19,15 +18,14 @@ class RouteGenerator {
       case '/join':
         return MaterialPageRoute(builder: (_) => JoinPlaylistScreen());
       case '/viewer':
-        print("viewer");
         return MaterialPageRoute(
-            builder: (context) => PlaylistViewerScreen(playlistCode));
+            builder: (context) => PlaylistViewerScreen(playlistCode, false));
       case '/request':
         return MaterialPageRoute(
             builder: (_) => SongSearchScreen(playlistCode));
       case '/owner':
         return MaterialPageRoute(
-            builder: (_) => PlaylistOwnerScreen(playlistCode));
+            builder: (_) => PlaylistViewerScreen(playlistCode, true));
 
       default:
         return _errorRoute();

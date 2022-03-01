@@ -9,8 +9,9 @@ import 'components/requested_songs_tiles_list.dart';
 class PlaylistViewerScreen extends StatelessWidget {
   late ReqSongListController reqSongController;
   final String playlistCode;
+  final bool isOwner;
 
-  PlaylistViewerScreen(this.playlistCode) {
+  PlaylistViewerScreen(this.playlistCode, this.isOwner) {
     reqSongController = currPlaylists[playlistCode];
   }
 
@@ -70,7 +71,7 @@ class PlaylistViewerScreen extends StatelessWidget {
             ),
             Expanded(
               // load from Firebase
-              child: RequestedSongsTileList(this.playlistCode),
+              child: RequestedSongsTileList(this.playlistCode, this.isOwner),
             )
           ],
         ),

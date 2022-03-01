@@ -31,6 +31,20 @@ class ReqSongListController {
     }
   }
 
+  removeSongFromFb(Song song) async {
+    await fbSongList.get().then((doc) {
+      for (var songId in doc["songs"].keys) {
+        if (songId == song.getUID().toString()) {
+          var songCopyList = doc["songs"];
+          songCopyList.remove(songId);
+          fbSongList.update({'songs': songCopyList});
+          _songs.remove(song);
+          return;
+        }
+      }
+    });
+  }
+
   bool containsSong(Song s) {
     for (Song currSong in _songs) {
       if (s.toString() == currSong.toString()) {
@@ -94,7 +108,7 @@ class ReqSongListController {
         .then((DocumentSnapshot doc) {
           // {songId: {songName: "", }, songId: {songName: "", ...}, }
           Map<String, dynamic> songsCopy = doc["songs"];
-          for (String songId in songsCopy.keys) {
+          for (String songId in doc["songs"].keys) {
             if (uid.toString() == songId) {
               // update vote count
               songsCopy[songId]["voteCount"] = newVoteCount;
@@ -128,6 +142,7 @@ class ReqSongListController {
         _songs[songIndex].voteCount = song.voteCount;
       } else {
         // if song doesn't exist, then add to the list
+        print("added song in req_song_controller $_playlistCode");
         _songs.add(song);
       }
     }

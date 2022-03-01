@@ -33,6 +33,14 @@ class _PlayListInfoState extends State<PlayListInfo> {
                 onPressed: () {
                   // copy to clipboard
                   Clipboard.setData(ClipboardData(text: widget.playlistCode));
+                  final snackBar = SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    content: Container(
+                      child: Text("Copied code to clipboard"),
+                    ),
+                    backgroundColor: Colors.black.withOpacity(0.8),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(

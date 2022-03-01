@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_connections/constants.dart';
+import 'package:music_connections/controllers/app_controller.dart';
 import 'package:music_connections/controllers/song_search_list_controller.dart';
 import '../models/song.dart';
 import './components/song_tile.dart';
@@ -34,14 +35,20 @@ class _SongSearchScreenState extends State<SongSearchScreen> {
     bool songAdded = await songs.addSongToFb(
         s.songName, s.artist, s.albumCover, s.popularity);
 
+    print(currPlaylists[widget.playlistCode].getSongs());
+
     if (!songAdded) {
       // already exists
-      snackBarMsg = "Song already added in list.";
+      snackBarMsg = "Song already added to list";
     } else {
       // added to song list
-      snackBarMsg = "Song added to requested songs list.";
+      snackBarMsg = "Song added to Requested songs list";
     }
-    final snackBar = SnackBar(content: Text(snackBarMsg));
+    final snackBar = SnackBar(
+      content: Text(snackBarMsg),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.black.withOpacity(0.8),
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -57,7 +64,6 @@ class _SongSearchScreenState extends State<SongSearchScreen> {
           padding: const EdgeInsets.fromLTRB(8, 0, 10, 0),
           child: const Text(
             "Request a Song",
-            textAlign: TextAlign.left,
             style: kAppBarHeadingStyle,
           ),
         ),
@@ -90,6 +96,7 @@ class _SongSearchScreenState extends State<SongSearchScreen> {
               child: SongTile(
                 songs.getSongsSortedByPopularity(),
                 addSong,
+                true, // isSearchSongScreen
               ),
             ),
           ],
