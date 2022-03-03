@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:quiver/core.dart';
 
 class Song {
   late String artist;
@@ -52,8 +54,7 @@ class Song {
     return _userVoted;
   }
 
-  int getUID() {
-    return "${this.songName}${this.artist}${this.albumCover}${this.popularity}"
-        .hashCode;
+  String getUID() {
+    return "${this.songName}${this.artist}${this.albumCover}${this.popularity}";
   }
 }

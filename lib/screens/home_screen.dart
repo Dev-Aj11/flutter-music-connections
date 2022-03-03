@@ -38,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                 text: TextSpan(style: kAppDescriptionStyle, children: [
                   TextSpan(text: "Request, Vote, & Play the most "),
                   TextSpan(
-                    text: "poppin'",
+                    text: "poppin' ",
                     style: kAppDescriptionStyle.copyWith(color: kPrimaryColor),
                   ),
                   TextSpan(text: "music")
@@ -47,10 +47,10 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              Image.asset(
-                music_party_image,
-                width: 300,
-                height: 300,
+              Expanded(
+                child: Image.asset(
+                  music_party_image,
+                ),
               ),
               SizedBox(
                 height: 10,

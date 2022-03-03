@@ -90,7 +90,9 @@ class ReqSongListController {
   // increase vote count of song
   updateVoteCount(Song song, bool userVoted) async {
     // update firebase
-    int uid = song.toString().hashCode;
+    String uid = song.getUID();
+    print("from update vote count");
+    print(uid);
 
     int newVoteCount = 0;
     int songIndex = _indexOf(song);
@@ -107,12 +109,13 @@ class ReqSongListController {
         .get()
         .then((DocumentSnapshot doc) {
           // {songId: {songName: "", }, songId: {songName: "", ...}, }
-          Map<String, dynamic> songsCopy = doc["songs"];
+          var songsCopy = doc["songs"];
           for (String songId in doc["songs"].keys) {
-            if (uid.toString() == songId) {
+            if (uid == songId) {
               // update vote count
               songsCopy[songId]["voteCount"] = newVoteCount;
               fbSongList.update({"songs": songsCopy});
+              // print(songsCopy);
               break;
             }
           }

@@ -44,7 +44,7 @@ class SongSearchListController {
         voteCount: 0);
 
     // Create UID based on user inputs to check for duplication
-    int uid = song.getUID();
+    String uid = song.getUID();
 
     // if song already exists in DB, return false (song will not be added)
     bool songExists = currPlaylists[playlistCode].containsSong(song);
@@ -63,7 +63,7 @@ class SongSearchListController {
         'popularity': popularity,
         'voteCount': 0
       };
-      songListCopy.putIfAbsent(uid.toString(), () => newSong);
+      songListCopy.putIfAbsent(uid, () => newSong);
       fbSongs.update({'songs': songListCopy});
       return true;
     });

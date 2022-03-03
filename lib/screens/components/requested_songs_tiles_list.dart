@@ -38,6 +38,7 @@ class _SongTilesState extends State<RequestedSongsTileList> {
 
   void updateVote(Song song, bool userVoted) async {
     // show progress indicator?
+    print("from req_song_tile");
     await reqSongController.updateVoteCount(song, userVoted);
     // don't need to call setState here since
     // StreamBuilder<> will automatically do so when value is updated
